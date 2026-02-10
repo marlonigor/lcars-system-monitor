@@ -1,0 +1,599 @@
+/* ============================================================
+   LCARS Design System — CSS Component Library
+   Star Trek LCARS-inspired UI for system monitoring
+   ============================================================ */
+
+/* --- Design Tokens --- */
+:root {
+  /* LCARS palette */
+  --lcars-orange: #ff9900;
+  --lcars-tanoi: #ffcc99;
+  --lcars-gold: #cc9933;
+  --lcars-blue: #9999ff;
+  --lcars-violet: #cc99cc;
+  --lcars-sky: #99ccff;
+  --lcars-mars: #cc6666;
+  --lcars-teal: #66cccc;
+
+  /* UI colors */
+  --lcars-bg: #000000;
+  --lcars-panel-bg: #0a0a1a;
+  --lcars-panel-border: rgba(153, 153, 255, 0.15);
+  --lcars-text: #ff9900;
+  --lcars-text-dim: #997733;
+
+  /* Component sizes */
+  --lcars-bar-h-height: 28px;
+  --lcars-bar-v-width: 28px;
+  --lcars-elbow-width: 150px;
+  --lcars-elbow-radius: 50px;
+  --lcars-button-radius: 20px;
+  --lcars-panel-padding: 16px;
+  --lcars-gap: 8px;
+
+  /* Typography */
+  --font-display: 'Antonio', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background: var(--lcars-bg);
+  color: var(--lcars-text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* --- App Layout --- */
+.lcars-app {
+  display: grid;
+  grid-template-columns: var(--lcars-elbow-width) 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header topbar"
+    "header main"
+    "header bottombar";
+  height: 100vh;
+  gap: 0;
+  position: relative;
+}
+
+/* --- Header / Sidebar --- */
+.lcars-header {
+  grid-area: header;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* --- LCARS Elbow --- */
+.lcars-elbow {
+  width: var(--lcars-elbow-width);
+  height: 90px;
+  position: relative;
+}
+
+.lcars-elbow-top-left {
+  background: var(--lcars-tanoi);
+  border-bottom-right-radius: var(--lcars-elbow-radius);
+}
+
+.lcars-elbow-top-left .lcars-elbow-inner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: calc(var(--lcars-elbow-width) - var(--lcars-bar-v-width));
+  height: calc(90px - var(--lcars-bar-h-height));
+  background: var(--lcars-bg);
+  border-top-left-radius: var(--lcars-elbow-radius);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.lcars-elbow-bottom-left {
+  background: var(--lcars-gold);
+  border-top-right-radius: var(--lcars-elbow-radius);
+}
+
+.lcars-elbow-bottom-left .lcars-elbow-inner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc(var(--lcars-elbow-width) - var(--lcars-bar-v-width));
+  height: calc(90px - var(--lcars-bar-h-height));
+  background: var(--lcars-bg);
+  border-bottom-left-radius: var(--lcars-elbow-radius);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.lcars-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--lcars-tanoi);
+  text-transform: uppercase;
+}
+
+/* --- Sidebar Bars --- */
+.lcars-sidebar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0;
+}
+
+.lcars-bar-v {
+  width: var(--lcars-bar-v-width);
+  flex: 1;
+  border-radius: 0;
+  min-height: 20px;
+}
+
+/* --- Horizontal Bars --- */
+.lcars-bar-h {
+  height: var(--lcars-bar-h-height);
+  min-width: 60px;
+  border-radius: 0;
+}
+
+/* --- Color Classes --- */
+.lcars-color-orange   { background-color: var(--lcars-orange); }
+.lcars-color-tanoi    { background-color: var(--lcars-tanoi); }
+.lcars-color-gold     { background-color: var(--lcars-gold); }
+.lcars-color-blue     { background-color: var(--lcars-blue); }
+.lcars-color-violet   { background-color: var(--lcars-violet); }
+.lcars-color-sky      { background-color: var(--lcars-sky); }
+.lcars-color-mars     { background-color: var(--lcars-mars); }
+.lcars-color-teal     { background-color: var(--lcars-teal); }
+
+/* --- Top Bar --- */
+.lcars-topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: stretch;
+  gap: var(--lcars-gap);
+  height: var(--lcars-bar-h-height);
+}
+
+/* --- Bottom Bar --- */
+.lcars-bottombar {
+  grid-area: bottombar;
+  display: flex;
+  align-items: center;
+  gap: var(--lcars-gap);
+  height: var(--lcars-bar-h-height);
+  padding-right: 12px;
+}
+
+/* --- Bracket (text between bars) --- */
+.lcars-bracket {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.lcars-bracket-text {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--lcars-tanoi);
+  white-space: nowrap;
+}
+
+/* --- Status Indicator --- */
+.lcars-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.lcars-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lcars-gold);
+  animation: lcars-pulse 1.5s ease-in-out infinite;
+}
+
+.lcars-status-dot.connected    { background: var(--lcars-teal); animation: none; }
+.lcars-status-dot.reconnecting { background: var(--lcars-orange); animation: lcars-blink 0.8s ease-in-out infinite; }
+.lcars-status-dot.disconnected { background: var(--lcars-mars); animation: none; }
+
+.lcars-status-text {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--lcars-tanoi);
+}
+
+/* --- Main Content --- */
+.lcars-main {
+  grid-area: main;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+/* --- Row Layout --- */
+.lcars-row {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* --- Panel --- */
+.lcars-panel {
+  flex: 1;
+  background: var(--lcars-panel-bg);
+  border: 1px solid var(--lcars-panel-border);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.lcars-panel-wide {
+  flex: 1.5;
+}
+
+.lcars-panel-header {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.lcars-panel-header .lcars-bar-h {
+  height: 24px;
+  min-width: 30px;
+}
+
+.lcars-panel-title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--lcars-tanoi);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.lcars-panel-body {
+  flex: 1;
+  padding: var(--lcars-panel-padding);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+/* --- Labels & Data --- */
+.lcars-label {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--lcars-sky);
+}
+
+.lcars-data {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--lcars-tanoi);
+}
+
+.lcars-data-large {
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.lcars-data-unit {
+  font-size: 14px;
+  color: var(--lcars-text-dim);
+  margin-left: 4px;
+}
+
+.lcars-data-small {
+  font-size: 12px;
+  color: var(--lcars-text-dim);
+}
+
+/* --- Metric Row --- */
+.lcars-metric-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* --- Bar Container (usage bars) --- */
+.lcars-bar-container {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.lcars-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+/* --- Canvas (history chart) --- */
+#cpu-history-canvas {
+  width: 100%;
+  flex: 1;
+  min-height: 80px;
+  border-radius: 2px;
+}
+
+/* --- Memory Segments --- */
+.lcars-memory-segments {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+}
+
+.lcars-memory-segment {
+  height: 100%;
+  border-radius: 1px;
+  transition: flex 0.5s ease;
+}
+
+/* --- Disk Cards --- */
+.lcars-disk-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--lcars-panel-border);
+}
+
+.lcars-disk-card:last-child {
+  border-bottom: none;
+}
+
+.lcars-disk-mount {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--lcars-sky);
+  min-width: 60px;
+}
+
+.lcars-disk-bar {
+  flex: 1;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.lcars-disk-fill {
+  height: 100%;
+  background: var(--lcars-gold);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.lcars-disk-fill.warning {
+  background: var(--lcars-orange);
+}
+
+.lcars-disk-fill.critical {
+  background: var(--lcars-mars);
+}
+
+.lcars-disk-info {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--lcars-tanoi);
+  min-width: 100px;
+  text-align: right;
+}
+
+/* --- Process Table --- */
+.lcars-process-header {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--lcars-panel-border);
+  flex-shrink: 0;
+}
+
+.lcars-process-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.lcars-process-row {
+  display: flex;
+  gap: 8px;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--lcars-tanoi);
+}
+
+.lcars-process-row:hover {
+  background: rgba(153, 204, 255, 0.05);
+}
+
+.proc-pid  { width: 60px; text-align: right; }
+.proc-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.proc-cpu  { width: 60px; text-align: right; }
+.proc-mem  { width: 60px; text-align: right; }
+
+.lcars-process-footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid var(--lcars-panel-border);
+  flex-shrink: 0;
+}
+
+/* --- Toggle Buttons --- */
+.lcars-toggle {
+  display: flex;
+  gap: 2px;
+  align-items: stretch;
+}
+
+.lcars-button {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--lcars-bg);
+  border: none;
+  padding: 0 14px;
+  cursor: pointer;
+  border-radius: var(--lcars-button-radius);
+  transition: opacity 0.2s ease;
+}
+
+.lcars-button:hover {
+  opacity: 0.85;
+}
+
+.lcars-button.active {
+  opacity: 1;
+}
+
+.lcars-button:not(.active) {
+  opacity: 0.4;
+}
+
+/* --- Unavailable State --- */
+.lcars-unavailable {
+  color: var(--lcars-mars);
+  animation: lcars-blink 1.5s ease-in-out infinite;
+}
+
+.lcars-sensor-offline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--lcars-mars);
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  animation: lcars-blink 2s ease-in-out infinite;
+}
+
+/* --- Scan Line Overlay --- */
+.lcars-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 100;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+}
+
+.lcars-scanline::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(153, 204, 255, 0.15),
+    transparent
+  );
+  animation: lcars-scan 6s linear infinite;
+}
+
+/* --- Animations --- */
+@keyframes lcars-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes lcars-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+@keyframes lcars-scan {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+/* --- Reconnect Banner --- */
+.lcars-reconnect-banner {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--lcars-mars);
+  color: var(--lcars-bg);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 24px;
+  border-radius: var(--lcars-button-radius);
+  cursor: pointer;
+  z-index: 200;
+  display: none;
+  animation: lcars-pulse 2s ease-in-out infinite;
+}
+
+.lcars-reconnect-banner:hover {
+  opacity: 0.9;
+}
+
+.lcars-reconnect-banner.visible {
+  display: block;
+}

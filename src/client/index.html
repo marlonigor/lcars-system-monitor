@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LCARS System Monitor — Real-time system metrics with a Star Trek LCARS interface">
+  <title>LCARS System Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/lcars.css">
+</head>
+<body>
+  <div class="lcars-app">
+
+    <!-- Left sidebar with LCARS elbow -->
+    <header class="lcars-header">
+      <div class="lcars-elbow lcars-elbow-top-left">
+        <div class="lcars-elbow-inner">
+          <span class="lcars-title">LCARS</span>
+        </div>
+      </div>
+      <div class="lcars-sidebar">
+        <div class="lcars-bar-v lcars-color-tanoi"></div>
+        <div class="lcars-bar-v lcars-color-gold"></div>
+        <div class="lcars-bar-v lcars-color-violet"></div>
+        <div class="lcars-bar-v lcars-color-blue"></div>
+        <div class="lcars-bar-v lcars-color-sky"></div>
+        <div class="lcars-bar-v lcars-color-tanoi"></div>
+      </div>
+      <div class="lcars-elbow lcars-elbow-bottom-left">
+        <div class="lcars-elbow-inner">
+          <span class="lcars-label">SYS MONITOR</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Top bar -->
+    <nav class="lcars-topbar">
+      <div class="lcars-bar-h lcars-color-tanoi"></div>
+      <div class="lcars-bracket">
+        <span class="lcars-bracket-text">SYSTEM MONITOR</span>
+      </div>
+      <div class="lcars-bar-h lcars-color-gold" style="flex:1"></div>
+      <div id="connection-status" class="lcars-status-indicator">
+        <span class="lcars-status-dot"></span>
+        <span class="lcars-status-text">CONNECTING</span>
+      </div>
+      <div class="lcars-bar-h lcars-color-violet"></div>
+    </nav>
+
+    <!-- Main content area -->
+    <main class="lcars-main">
+
+      <!-- Row 1: CPU + Memory -->
+      <section class="lcars-row">
+        <div class="lcars-panel" id="cpu-panel">
+          <div class="lcars-panel-header">
+            <div class="lcars-bar-h lcars-color-sky"></div>
+            <span class="lcars-panel-title">CPU UTILIZATION</span>
+            <div class="lcars-bar-h lcars-color-sky" style="flex:1"></div>
+          </div>
+          <div class="lcars-panel-body">
+            <div class="lcars-metric-row">
+              <span class="lcars-label">USAGE</span>
+              <span class="lcars-data lcars-data-large" id="cpu-usage">--</span>
+              <span class="lcars-data lcars-data-unit">%</span>
+            </div>
+            <div class="lcars-bar-container" id="cpu-bar-container">
+              <div class="lcars-bar-fill lcars-color-sky" id="cpu-bar-fill"></div>
+            </div>
+            <canvas id="cpu-history-canvas" width="600" height="150"></canvas>
+          </div>
+        </div>
+
+        <div class="lcars-panel" id="memory-panel">
+          <div class="lcars-panel-header">
+            <div class="lcars-bar-h lcars-color-violet"></div>
+            <span class="lcars-panel-title">MEMORY ALLOCATION</span>
+            <div class="lcars-bar-h lcars-color-violet" style="flex:1"></div>
+          </div>
+          <div class="lcars-panel-body">
+            <div class="lcars-metric-row">
+              <span class="lcars-label">USED</span>
+              <span class="lcars-data lcars-data-large" id="memory-used">--</span>
+              <span class="lcars-data lcars-data-unit">GB</span>
+            </div>
+            <div class="lcars-metric-row">
+              <span class="lcars-label">TOTAL</span>
+              <span class="lcars-data" id="memory-total">--</span>
+              <span class="lcars-data lcars-data-unit">GB</span>
+              <span class="lcars-label" style="margin-left:auto">FREE</span>
+              <span class="lcars-data" id="memory-free">--</span>
+              <span class="lcars-data lcars-data-unit">GB</span>
+            </div>
+            <div class="lcars-bar-container" id="memory-bar-container">
+              <div class="lcars-bar-fill lcars-color-violet" id="memory-bar-fill"></div>
+            </div>
+            <div class="lcars-memory-segments" id="memory-segments"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Row 2: Disk + Processes -->
+      <section class="lcars-row">
+        <div class="lcars-panel" id="disk-panel">
+          <div class="lcars-panel-header">
+            <div class="lcars-bar-h lcars-color-gold"></div>
+            <span class="lcars-panel-title">STORAGE SUBSYSTEM</span>
+            <div class="lcars-bar-h lcars-color-gold" style="flex:1"></div>
+          </div>
+          <div class="lcars-panel-body" id="disk-list">
+            <!-- Disk cards rendered dynamically -->
+          </div>
+        </div>
+
+        <div class="lcars-panel lcars-panel-wide" id="process-panel">
+          <div class="lcars-panel-header">
+            <div class="lcars-bar-h lcars-color-tanoi"></div>
+            <span class="lcars-panel-title">ACTIVE PROCESSES</span>
+            <div class="lcars-bar-h lcars-color-tanoi" style="flex:1"></div>
+            <div class="lcars-toggle" id="process-sort-toggle">
+              <button class="lcars-button lcars-color-tanoi active" data-sort="cpu">CPU</button>
+              <button class="lcars-button lcars-color-gold" data-sort="memory">MEM</button>
+            </div>
+          </div>
+          <div class="lcars-panel-body">
+            <div class="lcars-process-header">
+              <span class="lcars-label proc-pid">PID</span>
+              <span class="lcars-label proc-name">PROCESS</span>
+              <span class="lcars-label proc-cpu">CPU %</span>
+              <span class="lcars-label proc-mem">MEM %</span>
+            </div>
+            <div class="lcars-process-list" id="process-list">
+              <!-- Process rows rendered dynamically -->
+            </div>
+            <div class="lcars-process-footer">
+              <span class="lcars-label">TOTAL PROCESSES</span>
+              <span class="lcars-data" id="process-total-count">--</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom bar -->
+    <footer class="lcars-bottombar">
+      <div class="lcars-bar-h lcars-color-gold" style="flex:1"></div>
+      <div class="lcars-bracket">
+        <span class="lcars-bracket-text" id="system-status-text">INITIALIZING</span>
+      </div>
+      <div class="lcars-bar-h lcars-color-tanoi"></div>
+      <span class="lcars-data lcars-data-small" id="last-update-time">--:--:--</span>
+      <div class="lcars-bar-h lcars-color-violet" style="flex:0.5"></div>
+    </footer>
+
+    <!-- Scan line overlay -->
+    <div class="lcars-scanline"></div>
+
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
