@@ -34,6 +34,7 @@ export class SystemMonitorService {
             cpu: cpuUsage,
             memory: memPercentage,
             timestamp,
+            _seq: this._historyIndex,
         }
         this._historyIndex++
 
@@ -58,10 +59,13 @@ export class SystemMonitorService {
 
     /**
      * Returns history sorted chronologically, filtering out empty slots.
+     * Uses _seq as tiebreaker when timestamps are equal (same millisecond).
      * @returns {Array<{ cpu: number|null, memory: number|null, timestamp: number }>}
      */
     getHistory() {
-        return this._history.filter(Boolean).sort((a, b) => a.timestamp - b.timestamp)
+        return this._history
+            .filter(Boolean)
+            .sort((a, b) => a.timestamp - b.timestamp || a._seq - b._seq)
     }
 
     /**
