@@ -15,7 +15,7 @@ export class MetricsRepository {
     constructor(nodeAdapter, siAdapter) {
         this.nodeAdapter = nodeAdapter
         this.siAdapter = siAdapter
-        this._lastKnown = { cpu: null, memory: null, disk: null, processes: null }
+        this._lastKnown = { cpu: null, memory: null, disk: null, processes: null, network: null, systemInfo: null }
     }
 
     /**
@@ -28,6 +28,8 @@ export class MetricsRepository {
             memory: () => this.nodeAdapter.getMemoryUsage(),
             disk: () => this.siAdapter.getDiskUsage(),
             processes: () => this.siAdapter.getProcesses(),
+            network: () => this.siAdapter.getNetworkStats(),
+            systemInfo: () => this.nodeAdapter.getSystemInfo(),
         }
 
         const keys = Object.keys(collectors)

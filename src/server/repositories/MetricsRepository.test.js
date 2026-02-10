@@ -37,6 +37,20 @@ function createMockAdapter(overrides = {}) {
                     percentage: 50.0,
                 },
             ]),
+        getNetworkStats:
+            overrides.getNetworkStats ??
+            (async () => ({ rxSec: 1000, txSec: 500, interfaces: [] })),
+        getSystemInfo:
+            overrides.getSystemInfo ??
+            (async () => ({
+                hostname: 'test-host',
+                platform: 'win32',
+                arch: 'x64',
+                uptime: 3600,
+                uptimeFormatted: '1h 0m',
+                cpuModel: 'Test CPU',
+                cpuCores: 4,
+            })),
     }
 }
 
@@ -149,6 +163,8 @@ describe('MetricsRepository', () => {
                 getMemoryUsage: async () => null,
                 getProcesses: async () => null,
                 getDiskUsage: async () => null,
+                getNetworkStats: async () => null,
+                getSystemInfo: async () => null,
             })
 
             const repo = new MetricsRepository(allNull, allNull)
@@ -158,6 +174,8 @@ describe('MetricsRepository', () => {
             assert.equal(result.memory.data, null)
             assert.equal(result.disk.data, null)
             assert.equal(result.processes.data, null)
+            assert.equal(result.network.data, null)
+            assert.equal(result.systemInfo.data, null)
         })
 
         it('only updates lastKnown with non-null data', async () => {

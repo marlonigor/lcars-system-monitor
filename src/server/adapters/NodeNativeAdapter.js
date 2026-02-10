@@ -85,4 +85,33 @@ export class NodeNativeAdapter extends SystemMetricsAdapter {
             percentage: Math.round(percentage * 100) / 100,
         }
     }
+
+    /**
+     * Returns static system information: hostname, platform, arch, uptime, CPU model.
+     * @returns {{ hostname: string, platform: string, arch: string, uptime: number, uptimeFormatted: string, cpuModel: string, cpuCores: number }}
+     */
+    async getSystemInfo() {
+        const uptimeSec = os.uptime()
+        const days = Math.floor(uptimeSec / 86400)
+        const hours = Math.floor((uptimeSec % 86400) / 3600)
+        const minutes = Math.floor((uptimeSec % 3600) / 60)
+
+        const parts = []
+        if (days > 0) parts.push(`${days}d`)
+        parts.push(`${hours}h`)
+        parts.push(`${minutes}m`)
+
+        const cpus = os.cpus()
+        const cpuModel = cpus.length > 0 ? cpus[0].model.trim() : 'Unknown'
+
+        return {
+            hostname: os.hostname(),
+            platform: os.platform(),
+            arch: os.arch(),
+            uptime: uptimeSec,
+            uptimeFormatted: parts.join(' '),
+            cpuModel,
+            cpuCores: cpus.length,
+        }
+    }
 }

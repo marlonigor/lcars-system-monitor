@@ -12,6 +12,7 @@ export class SystemInformationAdapter extends SystemMetricsAdapter {
     constructor() {
         super()
         this._diskCache = { data: null, timestamp: 0 }
+        this._prevNetwork = null
     }
 
     /**
@@ -76,6 +77,56 @@ export class SystemInformationAdapter extends SystemMetricsAdapter {
             return mounted
         } catch (err) {
             log.error({ err }, 'Failed to collect disk metrics')
+            return null
+        }
+    }
+
+    /**
+     * Returns network bandwidth stats (bytes/second) using delta calculation.
+     * First call returns null (needs baseline snapshot).
+     * @returns {{ rxSec: number, txSec: number, interfaces: Array } | null}
+     */
+    async getNetworkStats() {
+        try {
+            const stats = await si.networkStats()
+            const now = Date.now()
+
+            // Aggregate all interfaces
+            let totalRx = 0
+            let totalTx = 0
+            const interfaces = []
+
+            for (const iface of stats) {
+                totalRx += iface.rx_bytes || 0
+                totalTx += iface.tx_bytes || 0
+                interfaces.push({
+                    name: iface.iface,
+                    rxSec: Math.round(iface.rx_sec || 0),
+                    txSec: Math.round(iface.tx_sec || 0),
+                })
+            }
+
+            const prev = this._prevNetwork
+            this._prevNetwork = { rx: totalRx, tx: totalTx, timestamp: now }
+
+            if (!prev) {
+                log.debug('First network read — no delta yet')
+                return null
+            }
+
+            const elapsed = (now - prev.timestamp) / 1000
+            if (elapsed <= 0) return null
+
+            const rxSec = Math.round((totalRx - prev.rx) / elapsed)
+            const txSec = Math.round((totalTx - prev.tx) / elapsed)
+
+            return {
+                rxSec: Math.max(rxSec, 0),
+                txSec: Math.max(txSec, 0),
+                interfaces: interfaces.filter((i) => i.rxSec > 0 || i.txSec > 0),
+            }
+        } catch (err) {
+            log.error({ err }, 'Failed to collect network metrics')
             return null
         }
     }

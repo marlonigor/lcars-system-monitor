@@ -37,13 +37,16 @@
 }
 
 /* --- Reset & Base --- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   background: var(--lcars-bg);
   color: var(--lcars-text);
@@ -152,14 +155,37 @@ html, body {
 }
 
 /* --- Color Classes --- */
-.lcars-color-orange   { background-color: var(--lcars-orange); }
-.lcars-color-tanoi    { background-color: var(--lcars-tanoi); }
-.lcars-color-gold     { background-color: var(--lcars-gold); }
-.lcars-color-blue     { background-color: var(--lcars-blue); }
-.lcars-color-violet   { background-color: var(--lcars-violet); }
-.lcars-color-sky      { background-color: var(--lcars-sky); }
-.lcars-color-mars     { background-color: var(--lcars-mars); }
-.lcars-color-teal     { background-color: var(--lcars-teal); }
+.lcars-color-orange {
+  background-color: var(--lcars-orange);
+}
+
+.lcars-color-tanoi {
+  background-color: var(--lcars-tanoi);
+}
+
+.lcars-color-gold {
+  background-color: var(--lcars-gold);
+}
+
+.lcars-color-blue {
+  background-color: var(--lcars-blue);
+}
+
+.lcars-color-violet {
+  background-color: var(--lcars-violet);
+}
+
+.lcars-color-sky {
+  background-color: var(--lcars-sky);
+}
+
+.lcars-color-mars {
+  background-color: var(--lcars-mars);
+}
+
+.lcars-color-teal {
+  background-color: var(--lcars-teal);
+}
 
 /* --- Top Bar --- */
 .lcars-topbar {
@@ -214,9 +240,20 @@ html, body {
   animation: lcars-pulse 1.5s ease-in-out infinite;
 }
 
-.lcars-status-dot.connected    { background: var(--lcars-teal); animation: none; }
-.lcars-status-dot.reconnecting { background: var(--lcars-orange); animation: lcars-blink 0.8s ease-in-out infinite; }
-.lcars-status-dot.disconnected { background: var(--lcars-mars); animation: none; }
+.lcars-status-dot.connected {
+  background: var(--lcars-teal);
+  animation: none;
+}
+
+.lcars-status-dot.reconnecting {
+  background: var(--lcars-orange);
+  animation: lcars-blink 0.8s ease-in-out infinite;
+}
+
+.lcars-status-dot.disconnected {
+  background: var(--lcars-mars);
+  animation: none;
+}
 
 .lcars-status-text {
   font-family: var(--font-display);
@@ -352,11 +389,39 @@ html, body {
 }
 
 /* --- Canvas (history chart) --- */
-#cpu-history-canvas {
+#cpu-history-canvas,
+#network-history-canvas {
   width: 100%;
   flex: 1;
   min-height: 80px;
   border-radius: 2px;
+}
+
+/* --- Chart Legend --- */
+.lcars-chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 2px 0;
+}
+
+.lcars-legend-item {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--lcars-tanoi);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lcars-legend-swatch {
+  width: 12px;
+  height: 3px;
+  border-radius: 1px;
+  display: inline-block;
 }
 
 /* --- Memory Segments --- */
@@ -454,10 +519,27 @@ html, body {
   background: rgba(153, 204, 255, 0.05);
 }
 
-.proc-pid  { width: 60px; text-align: right; }
-.proc-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.proc-cpu  { width: 60px; text-align: right; }
-.proc-mem  { width: 60px; text-align: right; }
+.proc-pid {
+  width: 60px;
+  text-align: right;
+}
+
+.proc-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proc-cpu {
+  width: 60px;
+  text-align: right;
+}
+
+.proc-mem {
+  width: 60px;
+  text-align: right;
+}
 
 .lcars-process-footer {
   display: flex;
@@ -528,13 +610,11 @@ html, body {
   bottom: 0;
   pointer-events: none;
   z-index: 100;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
-  );
+  background: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.08) 2px,
+      rgba(0, 0, 0, 0.08) 4px);
 }
 
 .lcars-scanline::after {
@@ -544,29 +624,106 @@ html, body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(153, 204, 255, 0.15),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(153, 204, 255, 0.15),
+      transparent);
   animation: lcars-scan 6s linear infinite;
+}
+
+/* --- System Info Strip (Top Bar) --- */
+.lcars-sysinfo-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.lcars-sysinfo-item {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--lcars-sky);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.lcars-sysinfo-sep {
+  color: var(--lcars-text-dim);
+  font-size: 10px;
+}
+
+/* --- Network Interface Cards --- */
+.lcars-network-interfaces {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.lcars-network-iface {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--lcars-panel-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--lcars-tanoi);
+}
+
+.lcars-network-iface:last-child {
+  border-bottom: none;
+}
+
+.lcars-network-iface-name {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--lcars-teal);
+  min-width: 80px;
+}
+
+.lcars-network-iface-rate {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--lcars-tanoi);
 }
 
 /* --- Animations --- */
 @keyframes lcars-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 @keyframes lcars-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
 }
 
 @keyframes lcars-scan {
-  0% { top: 0; }
-  100% { top: 100%; }
+  0% {
+    top: 0;
+  }
+
+  100% {
+    top: 100%;
+  }
 }
 
 /* --- Reconnect Banner --- */

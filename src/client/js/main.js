@@ -10,6 +10,8 @@ import { CpuRenderer } from './renderers/cpuRenderer.js'
 import { MemoryRenderer } from './renderers/memoryRenderer.js'
 import { DiskRenderer } from './renderers/diskRenderer.js'
 import { ProcessRenderer } from './renderers/processRenderer.js'
+import { NetworkRenderer } from './renderers/networkRenderer.js'
+import { SystemInfoRenderer } from './renderers/systemInfoRenderer.js'
 import { StatusRenderer } from './renderers/statusRenderer.js'
 
 // --- Initialize Renderers ---
@@ -19,12 +21,16 @@ const cpuRenderer = new CpuRenderer()
 const memoryRenderer = new MemoryRenderer()
 const diskRenderer = new DiskRenderer()
 const processRenderer = new ProcessRenderer()
+const networkRenderer = new NetworkRenderer()
+const systemInfoRenderer = new SystemInfoRenderer()
 
 const renderers = [
     { name: 'cpu', instance: cpuRenderer },
     { name: 'memory', instance: memoryRenderer },
     { name: 'disk', instance: diskRenderer },
     { name: 'processes', instance: processRenderer },
+    { name: 'network', instance: networkRenderer },
+    { name: 'systemInfo', instance: systemInfoRenderer },
 ]
 
 // --- Render with Error Boundaries ---

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Skip if the environment variable is set (prevents recursion during --amend)
+if [ "$SKIP_README_HOOK" = "1" ]; then
+    exit 0
+fi
+
+echo "📝 Updating README.md..."
+
+# Generate the README
+node scripts/generate-readme.js
+
+# Stage and amend the current commit to include the updated README
+git add README.md
+SKIP_README_HOOK=1 git commit --amend --no-edit --no-verify

@@ -29,17 +29,21 @@ export class SystemMonitorService {
         // Push to ring buffer (O(1))
         const cpuUsage = metrics.cpu.status === 'ok' ? metrics.cpu.data.usage : null
         const memPercentage = metrics.memory.status === 'ok' ? metrics.memory.data.percentage : null
+        const networkRx = metrics.network.status === 'ok' && metrics.network.data ? metrics.network.data.rxSec : null
+        const networkTx = metrics.network.status === 'ok' && metrics.network.data ? metrics.network.data.txSec : null
 
         this._history[this._historyIndex % HISTORY_SIZE] = {
             cpu: cpuUsage,
             memory: memPercentage,
+            networkRx,
+            networkTx,
             timestamp,
             _seq: this._historyIndex,
         }
         this._historyIndex++
 
-        // Compute global status
-        const statuses = ['cpu', 'memory', 'disk', 'processes'].map((k) => metrics[k].status)
+        // Compute global status (network included, systemInfo excluded — it's informational)
+        const statuses = ['cpu', 'memory', 'disk', 'processes', 'network'].map((k) => metrics[k].status)
         const globalStatus = this._computeGlobalStatus(statuses)
 
         if (globalStatus !== 'ok') {
@@ -53,6 +57,8 @@ export class SystemMonitorService {
             memory: metrics.memory,
             disk: metrics.disk,
             processes: metrics.processes,
+            network: metrics.network,
+            systemInfo: metrics.systemInfo,
             history: this.getHistory(),
         }
     }

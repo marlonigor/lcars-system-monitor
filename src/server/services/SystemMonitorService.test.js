@@ -17,6 +17,11 @@ function createMockRepo(overrides = {}) {
                     status: 'ok',
                     data: { byCpu: [], byMemory: [], totalCount: 100 },
                 },
+                network: { status: 'ok', data: { rxSec: 1000, txSec: 500, interfaces: [] } },
+                systemInfo: {
+                    status: 'ok',
+                    data: { hostname: 'test', platform: 'win32', arch: 'x64', uptime: 3600, uptimeFormatted: '1h 0m', cpuModel: 'Test CPU', cpuCores: 4 },
+                },
             })),
     }
 }
@@ -39,6 +44,8 @@ describe('SystemMonitorService', () => {
             assert(result.memory)
             assert(result.disk)
             assert(result.processes)
+            assert(result.network)
+            assert(result.systemInfo)
             assert(Array.isArray(result.history))
         })
 
@@ -76,6 +83,8 @@ describe('SystemMonitorService', () => {
                         memory: { status: 'ok', data: { percentage: callCount } },
                         disk: { status: 'ok', data: [] },
                         processes: { status: 'ok', data: { byCpu: [], byMemory: [], totalCount: 0 } },
+                        network: { status: 'ok', data: { rxSec: 0, txSec: 0, interfaces: [] } },
+                        systemInfo: { status: 'ok', data: { hostname: 'test', platform: 'win32', arch: 'x64', uptime: 0, uptimeFormatted: '0h 0m', cpuModel: 'Test', cpuCores: 1 } },
                     }
                 },
             })
@@ -116,6 +125,8 @@ describe('SystemMonitorService', () => {
                     memory: { status: 'unavailable', data: null },
                     disk: { status: 'ok', data: [] },
                     processes: { status: 'ok', data: { byCpu: [], byMemory: [], totalCount: 0 } },
+                    network: { status: 'ok', data: { rxSec: 0, txSec: 0, interfaces: [] } },
+                    systemInfo: { status: 'ok', data: { hostname: 'test', platform: 'win32', arch: 'x64', uptime: 0, uptimeFormatted: '0h 0m', cpuModel: 'Test', cpuCores: 1 } },
                 }),
             })
 
@@ -141,6 +152,8 @@ describe('SystemMonitorService', () => {
                     memory: { status: 'ok', data: { percentage: 50 } },
                     disk: { status: 'unavailable', data: null },
                     processes: { status: 'ok', data: { byCpu: [], byMemory: [], totalCount: 0 } },
+                    network: { status: 'ok', data: { rxSec: 0, txSec: 0, interfaces: [] } },
+                    systemInfo: { status: 'ok', data: { hostname: 'test', platform: 'win32', arch: 'x64', uptime: 0, uptimeFormatted: '0h 0m', cpuModel: 'Test', cpuCores: 1 } },
                 }),
             })
 
@@ -156,6 +169,8 @@ describe('SystemMonitorService', () => {
                     memory: { status: 'ok', data: { percentage: 50 } },
                     disk: { status: 'ok', data: [] },
                     processes: { status: 'ok', data: { byCpu: [], byMemory: [], totalCount: 0 } },
+                    network: { status: 'ok', data: { rxSec: 0, txSec: 0, interfaces: [] } },
+                    systemInfo: { status: 'ok', data: { hostname: 'test', platform: 'win32', arch: 'x64', uptime: 0, uptimeFormatted: '0h 0m', cpuModel: 'Test', cpuCores: 1 } },
                 }),
             })
 
@@ -171,6 +186,8 @@ describe('SystemMonitorService', () => {
                     memory: { status: 'unavailable', data: null },
                     disk: { status: 'unavailable', data: null },
                     processes: { status: 'unavailable', data: null },
+                    network: { status: 'unavailable', data: null },
+                    systemInfo: { status: 'unavailable', data: null },
                 }),
             })
 
@@ -186,6 +203,8 @@ describe('SystemMonitorService', () => {
                     memory: { status: 'unavailable', data: null },
                     disk: { status: 'unavailable', data: null },
                     processes: { status: 'ok', data: { byCpu: [], byMemory: [], totalCount: 0 } },
+                    network: { status: 'unavailable', data: null },
+                    systemInfo: { status: 'ok', data: { hostname: 'test', platform: 'win32', arch: 'x64', uptime: 0, uptimeFormatted: '0h 0m', cpuModel: 'Test', cpuCores: 1 } },
                 }),
             })
 
