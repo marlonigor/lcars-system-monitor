@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[test] Running ESLint..."
+npm run lint
+
+echo "[test] Running complete test suite..."
+npm test
+
+echo "[test] Running API and SSE smoke tests..."
+npm run verify
+
+echo "[test] All verification stages passed successfully."
