@@ -1,0 +1,28 @@
+services:
+  mock-zabbix:
+    image: node:22-alpine
+    container_name: lcars-mock-zabbix
+    working_dir: /app
+    volumes:
+      - ./scripts:/app/scripts:ro
+    command: ["node", "scripts/mock-zabbix-server.js", "8080"]
+    ports:
+      - "8080:8080"
+
+  lcars-monitor:
+    image: node:22-alpine
+    container_name: lcars-monitor
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - PORT=3001
+      - ZABBIX_URL=http://mock-zabbix:8080
+      - ZABBIX_TOKEN=docker-test-token
+      - ZABBIX_HOST_ID=10084
+      - COLLECT_INTERVAL=2000
+    command: ["npm", "start"]
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mock-zabbix
