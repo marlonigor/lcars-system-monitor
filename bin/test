@@ -4,6 +4,9 @@ set -euo pipefail
 echo "[test] Running ESLint..."
 npm run lint
 
+echo "[test] Running dependency security audit..."
+npm run audit
+
 echo "[test] Running complete test suite..."
 npm test
 

@@ -13,9 +13,11 @@
         "format": "prettier --write src/",
         "test": "node --test",
         "test:zabbix": "node scripts/zabbix-e2e.js",
-        "test:all": "npm run lint && npm test && npm run test:zabbix && npm run verify",
+        "audit": "npm audit --omit=dev --audit-level=high",
+        "test:all": "npm run lint && npm run audit && npm test && npm run test:zabbix && npm run verify",
         "verify": "node scripts/smoke-test.js",
         "readme": "node scripts/generate-readme.js",
+        "changelog": "node scripts/extract-changelog.js",
         "setup": "node scripts/setup-hooks.js"
     },
     "keywords": [

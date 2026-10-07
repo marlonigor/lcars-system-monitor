@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[deploy] Building production client assets..."
+npm run build
+
+echo "[deploy] Packaging release archive..."
+TARBALL_NAME="lcars-system-monitor.tar.gz"
+tar -czf "${TARBALL_NAME}" \
+    dist/ \
+    src/ \
+    package.json \
+    package-lock.json \
+    README.md \
+    .env.example
+
+if command -v sha256sum &> /dev/null; then
+    sha256sum "${TARBALL_NAME}" > "${TARBALL_NAME}.sha256"
+    echo "[deploy] Checksum generated: $(cat "${TARBALL_NAME}.sha256")"
+fi
+
+echo "[deploy] Deployment packaging complete: ${TARBALL_NAME}"

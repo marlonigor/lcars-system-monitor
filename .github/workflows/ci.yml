@@ -29,6 +29,9 @@ jobs:
       - name: Run linter
         run: npm run lint
 
+      - name: Run dependency security audit
+        run: npm run audit
+
       - name: Run test suite
         run: npm test
 

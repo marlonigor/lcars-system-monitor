@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[audit] Auditing production dependencies for security vulnerabilities..."
+npm audit --omit=dev --audit-level=high
+
+echo "[audit] Production dependency security audit passed successfully."
