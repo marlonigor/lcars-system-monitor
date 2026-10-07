@@ -7,6 +7,7 @@ This document describes the architectural integration between the LCARS System M
 ## 1. Overview
 
 The integration operates in a hybrid model:
+
 1. **Telemetry**: The LCARS backend queries Zabbix for real-time subsystem metrics (CPU utilization, memory, storage).
 2. **Alerting & Incident Management**: Active triggers from Zabbix (`problem.get`) drive the visual condition of the LCARS interface (Nominal, Yellow Alert, Red Alert).
 
@@ -38,14 +39,14 @@ ZABBIX_HOST_ID=10084
 
 Zabbix categorizes incidents into 6 severity levels (0 to 5). The `SystemMonitorService` translates these severities into canonical Star Trek alert conditions:
 
-| Zabbix Severity | Zabbix Label | LCARS Alert Level | LCARS Global Status | Visual Behavior |
-|---|---|---|---|---|
-| **0** | Not classified | `nominal` | `ok` | Normal teal/sky theme, "ALL SYSTEMS NOMINAL" |
-| **1** | Information | `nominal` | `ok` | Normal teal/sky theme, "ALL SYSTEMS NOMINAL" |
-| **2** | Warning | `nominal` | `ok` | Normal teal/sky theme, "ALL SYSTEMS NOMINAL" |
-| **3** | Average | `yellow` | `degraded` | Amber/gold accents, "CONDITION YELLOW", banner visible |
-| **4** | High | `red` | `critical` | Mars red theme, pulsating text, "RED ALERT", banner visible |
-| **5** | Disaster | `red` | `critical` | Mars red theme, pulsating text, "RED ALERT", banner visible |
+| Zabbix Severity | Zabbix Label   | LCARS Alert Level | LCARS Global Status | Visual Behavior                                             |
+| --------------- | -------------- | ----------------- | ------------------- | ----------------------------------------------------------- |
+| **0**     | Not classified | `nominal`       | `ok`              | Normal teal/sky theme, "ALL SYSTEMS NOMINAL"                |
+| **1**     | Information    | `nominal`       | `ok`              | Normal teal/sky theme, "ALL SYSTEMS NOMINAL"                |
+| **2**     | Warning        | `nominal`       | `ok`              | Normal teal/sky theme, "ALL SYSTEMS NOMINAL"                |
+| **3**     | Average        | `yellow`        | `degraded`        | Amber/gold accents, "CONDITION YELLOW", banner visible      |
+| **4**     | High           | `red`           | `critical`        | Mars red theme, pulsating text, "RED ALERT", banner visible |
+| **5**     | Disaster       | `red`           | `critical`        | Mars red theme, pulsating text, "RED ALERT", banner visible |
 
 ---
 
@@ -54,6 +55,7 @@ Zabbix categorizes incidents into 6 severity levels (0 to 5). The `SystemMonitor
 All communications are stateless HTTP POST requests using the JSON-RPC 2.0 protocol:
 
 ### Telemetry Request (`item.get`)
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -68,6 +70,7 @@ All communications are stateless HTTP POST requests using the JSON-RPC 2.0 proto
 ```
 
 ### Problem Request (`problem.get`)
+
 ```json
 {
   "jsonrpc": "2.0",
@@ -93,6 +96,7 @@ node scripts/mock-zabbix-server.js 8080
 ```
 
 And configure your `.env`:
+
 ```ini
 ZABBIX_URL=http://localhost:8080
 ZABBIX_TOKEN=mock-token

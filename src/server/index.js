@@ -25,7 +25,12 @@ if (process.env.ZABBIX_URL && process.env.ZABBIX_TOKEN && process.env.ZABBIX_HOS
 
 const nodeAdapter = new NodeNativeAdapter()
 const siAdapter = new SystemInformationAdapter()
-const repository = new MetricsRepository(nodeAdapter, siAdapter, alertAdapter)
+
+const useZabbixMetrics = process.env.METRICS_SOURCE === 'zabbix' && alertAdapter !== null
+const primaryAdapter = useZabbixMetrics ? alertAdapter : nodeAdapter
+const diskAdapter = useZabbixMetrics ? alertAdapter : siAdapter
+
+const repository = new MetricsRepository(primaryAdapter, diskAdapter, alertAdapter)
 const service = new SystemMonitorService(repository)
 const sseManager = new SSEManager()
 

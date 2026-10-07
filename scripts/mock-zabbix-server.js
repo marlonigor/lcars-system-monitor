@@ -54,6 +54,41 @@ function handleItemGet(id) {
                 key_: 'system.cpu.util',
                 lastvalue: String(currentCpuUsage),
             },
+            {
+                itemid: '2',
+                key_: 'vm.memory.size[total]',
+                lastvalue: '17179869184',
+            },
+            {
+                itemid: '3',
+                key_: 'vm.memory.size[available]',
+                lastvalue: '5153960755',
+            },
+            {
+                itemid: '4',
+                key_: 'vm.memory.util',
+                lastvalue: '70.0',
+            },
+            {
+                itemid: '5',
+                key_: 'vfs.fs.size[/,total]',
+                lastvalue: '1073741824000',
+            },
+            {
+                itemid: '6',
+                key_: 'vfs.fs.size[/,used]',
+                lastvalue: '536870912000',
+            },
+            {
+                itemid: '7',
+                key_: 'vfs.fs.size[/,free]',
+                lastvalue: '536870912000',
+            },
+            {
+                itemid: '8',
+                key_: 'vfs.fs.size[/,pused]',
+                lastvalue: '50.0',
+            },
         ],
         id,
     }

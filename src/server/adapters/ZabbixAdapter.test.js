@@ -125,4 +125,95 @@ describe('ZabbixAdapter', () => {
             assert.deepEqual(problems, [])
         })
     })
+
+    describe('getMemoryUsage', () => {
+        it('calculates memory metrics from vm.memory.size items', async () => {
+            const fetchFn = createFakeFetch(async (_url, body) => {
+                assert.equal(body.method, 'item.get')
+                return {
+                    result: [
+                        { key_: 'vm.memory.size[total]', lastvalue: '17179869184' },
+                        { key_: 'vm.memory.size[available]', lastvalue: '8589934592' },
+                        { key_: 'vm.memory.util', lastvalue: '50.0' },
+                    ],
+                }
+            })
+
+            const adapter = new ZabbixAdapter({
+                apiUrl: 'http://zabbix.local',
+                apiToken: 'fake-token',
+                hostId: '10084',
+                fetchFn,
+            })
+
+            const mem = await adapter.getMemoryUsage()
+            assert.deepEqual(mem, {
+                total: 17179869184,
+                used: 8589934592,
+                free: 8589934592,
+                percentage: 50.0,
+            })
+        })
+
+        it('returns null when no memory items are found', async () => {
+            const fetchFn = createFakeFetch(async () => ({ result: [] }))
+            const adapter = new ZabbixAdapter({
+                apiUrl: 'http://zabbix.local',
+                apiToken: 'fake-token',
+                hostId: '10084',
+                fetchFn,
+            })
+
+            const mem = await adapter.getMemoryUsage()
+            assert.equal(mem, null)
+        })
+    })
+
+    describe('getDiskUsage', () => {
+        it('groups filesystem items into volume metrics', async () => {
+            const fetchFn = createFakeFetch(async (_url, body) => {
+                assert.equal(body.method, 'item.get')
+                return {
+                    result: [
+                        { key_: 'vfs.fs.size[/,total]', lastvalue: '500000000000' },
+                        { key_: 'vfs.fs.size[/,used]', lastvalue: '250000000000' },
+                        { key_: 'vfs.fs.size[/,free]', lastvalue: '250000000000' },
+                        { key_: 'vfs.fs.size[/,pused]', lastvalue: '50.0' },
+                    ],
+                }
+            })
+
+            const adapter = new ZabbixAdapter({
+                apiUrl: 'http://zabbix.local',
+                apiToken: 'fake-token',
+                hostId: '10084',
+                fetchFn,
+            })
+
+            const disks = await adapter.getDiskUsage()
+            assert.equal(disks.length, 1)
+            assert.deepEqual(disks[0], {
+                fs: '/',
+                mount: '/',
+                type: 'vfs',
+                size: 500000000000,
+                used: 250000000000,
+                available: 250000000000,
+                percentage: 50.0,
+            })
+        })
+
+        it('returns null when no filesystem items are found', async () => {
+            const fetchFn = createFakeFetch(async () => ({ result: [] }))
+            const adapter = new ZabbixAdapter({
+                apiUrl: 'http://zabbix.local',
+                apiToken: 'fake-token',
+                hostId: '10084',
+                fetchFn,
+            })
+
+            const disks = await adapter.getDiskUsage()
+            assert.equal(disks, null)
+        })
+    })
 })
