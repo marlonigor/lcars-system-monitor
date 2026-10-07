@@ -3,27 +3,33 @@
  * Re-renders fully each update (20 rows = trivial DOM work).
  */
 
+import { escapeHtml } from '../utils/escapeHtml.js'
+
 export class ProcessRenderer {
-    constructor() {
-        this._listEl = document.getElementById('process-list')
-        this._totalCountEl = document.getElementById('process-total-count')
-        this._toggleEl = document.getElementById('process-sort-toggle')
+    constructor(elements = {}) {
+        this._listEl = elements.listEl || (typeof document !== 'undefined' ? document.getElementById('process-list') : null)
+        this._totalCountEl = elements.totalCountEl || (typeof document !== 'undefined' ? document.getElementById('process-total-count') : null)
+        this._toggleEl = elements.toggleEl || (typeof document !== 'undefined' ? document.getElementById('process-sort-toggle') : null)
         this._sortBy = 'cpu' // 'cpu' or 'memory'
 
-        this._setupToggle()
+        if (this._toggleEl) {
+            this._setupToggle()
+        }
     }
 
     _setupToggle() {
         this._toggleEl.addEventListener('click', (e) => {
-            const btn = e.target.closest('[data-sort]')
+            const btn = e.target.closest ? e.target.closest('[data-sort]') : null
             if (!btn) return
 
             this._sortBy = btn.dataset.sort
 
             // Update active state
-            this._toggleEl.querySelectorAll('.lcars-button').forEach((b) => {
-                b.classList.toggle('active', b.dataset.sort === this._sortBy)
-            })
+            if (this._toggleEl.querySelectorAll) {
+                this._toggleEl.querySelectorAll('.lcars-button').forEach((b) => {
+                    b.classList.toggle('active', b.dataset.sort === this._sortBy)
+                })
+            }
 
             // Re-render with current data
             if (this._lastData) {
@@ -62,18 +68,12 @@ export class ProcessRenderer {
                 (p) => `
           <div class="lcars-process-row">
             <span class="proc-pid">${p.pid}</span>
-            <span class="proc-name">${this._escapeHtml(p.name)}</span>
+            <span class="proc-name">${escapeHtml(p.name)}</span>
             <span class="proc-cpu">${p.cpu.toFixed(1)}</span>
             <span class="proc-mem">${p.memory.toFixed(1)}</span>
           </div>
         `,
             )
             .join('')
-    }
-
-    _escapeHtml(str) {
-        const div = document.createElement('div')
-        div.textContent = str
-        return div.innerHTML
     }
 }

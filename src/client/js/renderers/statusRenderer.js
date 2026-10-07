@@ -3,13 +3,15 @@
  */
 
 export class StatusRenderer {
-    constructor() {
-        this._dotEl = document.querySelector('.lcars-status-dot')
-        this._textEl = document.querySelector('.lcars-status-text')
-        this._systemStatusEl = document.getElementById('system-status-text')
-        this._timeEl = document.getElementById('last-update-time')
-        this._reconnectBanner = null
-        this._createReconnectBanner()
+    constructor(elements = {}) {
+        this._dotEl = elements.dotEl || (typeof document !== 'undefined' ? document.querySelector('.lcars-status-dot') : null)
+        this._textEl = elements.textEl || (typeof document !== 'undefined' ? document.querySelector('.lcars-status-text') : null)
+        this._systemStatusEl = elements.systemStatusEl || (typeof document !== 'undefined' ? document.getElementById('system-status-text') : null)
+        this._timeEl = elements.timeEl || (typeof document !== 'undefined' ? document.getElementById('last-update-time') : null)
+        this._reconnectBanner = elements.reconnectBanner || null
+        if (!this._reconnectBanner && typeof document !== 'undefined' && document.createElement) {
+            this._createReconnectBanner()
+        }
     }
 
     _createReconnectBanner() {

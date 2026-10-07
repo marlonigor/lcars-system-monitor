@@ -14,29 +14,35 @@ const LCARS_BG = '#0a0a1a'
 const LCARS_GRID = 'rgba(102, 204, 204, 0.08)'
 const HISTORY_SLOTS = 60
 
+import { escapeHtml } from '../utils/escapeHtml.js'
+
 export class NetworkRenderer {
-    constructor() {
-        this._rxEl = document.getElementById('network-rx')
-        this._txEl = document.getElementById('network-tx')
-        this._rxUnitEl = document.getElementById('network-rx-unit')
-        this._txUnitEl = document.getElementById('network-tx-unit')
-        this._interfacesEl = document.getElementById('network-interfaces')
-        this._peakLabel = document.getElementById('network-peak-label')
-        this._canvas = document.getElementById('network-history-canvas')
-        this._ctx = this._canvas.getContext('2d')
+    constructor(elements = {}) {
+        this._rxEl = elements.rxEl || (typeof document !== 'undefined' ? document.getElementById('network-rx') : null)
+        this._txEl = elements.txEl || (typeof document !== 'undefined' ? document.getElementById('network-tx') : null)
+        this._rxUnitEl = elements.rxUnitEl || (typeof document !== 'undefined' ? document.getElementById('network-rx-unit') : null)
+        this._txUnitEl = elements.txUnitEl || (typeof document !== 'undefined' ? document.getElementById('network-tx-unit') : null)
+        this._interfacesEl = elements.interfacesEl || (typeof document !== 'undefined' ? document.getElementById('network-interfaces') : null)
+        this._peakLabel = elements.peakLabel || (typeof document !== 'undefined' ? document.getElementById('network-peak-label') : null)
+        this._canvas = elements.canvas || (typeof document !== 'undefined' ? document.getElementById('network-history-canvas') : null)
+        this._ctx = elements.ctx || (this._canvas?.getContext ? this._canvas.getContext('2d') : null)
         this._lastHistoryLength = 0
-        this._setupCanvas()
+        if (this._canvas && this._ctx) {
+            this._setupCanvas()
+        }
     }
 
     _setupCanvas() {
-        const dpr = window.devicePixelRatio || 1
-        const rect = this._canvas.getBoundingClientRect()
+        const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1
+        const rect = this._canvas.getBoundingClientRect ? this._canvas.getBoundingClientRect() : { width: 600, height: 150 }
         const width = rect.width || 600
         const height = rect.height || 150
 
         this._canvas.width = width * dpr
         this._canvas.height = height * dpr
-        this._ctx.scale(dpr, dpr)
+        if (this._ctx.scale) {
+            this._ctx.scale(dpr, dpr)
+        }
         this._logicalWidth = width
         this._logicalHeight = height
     }
@@ -75,7 +81,7 @@ export class NetworkRenderer {
                         const tx = this._formatBandwidth(iface.txSec)
                         return `
               <div class="lcars-network-iface">
-                <span class="lcars-network-iface-name">${this._escapeHtml(iface.name)}</span>
+                <span class="lcars-network-iface-name">${escapeHtml(iface.name)}</span>
                 <span class="lcars-network-iface-rate">↓ ${rx.value} ${rx.unit}</span>
                 <span class="lcars-network-iface-rate">↑ ${tx.value} ${tx.unit}</span>
               </div>
@@ -201,11 +207,5 @@ export class NetworkRenderer {
         } else {
             return { value: (bytesPerSec / 1_073_741_824).toFixed(2), unit: 'GB/s' }
         }
-    }
-
-    _escapeHtml(str) {
-        const div = document.createElement('div')
-        div.textContent = str
-        return div.innerHTML
     }
 }

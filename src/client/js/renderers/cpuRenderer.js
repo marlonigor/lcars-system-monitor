@@ -11,24 +11,28 @@ const LCARS_BG = '#0a0a1a'
 const LCARS_GRID = 'rgba(153, 204, 255, 0.08)'
 
 export class CpuRenderer {
-    constructor() {
-        this._usageEl = document.getElementById('cpu-usage')
-        this._barFill = document.getElementById('cpu-bar-fill')
-        this._canvas = document.getElementById('cpu-history-canvas')
-        this._ctx = this._canvas.getContext('2d')
+    constructor(elements = {}) {
+        this._usageEl = elements.usageEl || (typeof document !== 'undefined' ? document.getElementById('cpu-usage') : null)
+        this._barFill = elements.barFill || (typeof document !== 'undefined' ? document.getElementById('cpu-bar-fill') : null)
+        this._canvas = elements.canvas || (typeof document !== 'undefined' ? document.getElementById('cpu-history-canvas') : null)
+        this._ctx = elements.ctx || (this._canvas?.getContext ? this._canvas.getContext('2d') : null)
         this._lastHistoryLength = 0
-        this._setupCanvas()
+        if (this._canvas && this._ctx) {
+            this._setupCanvas()
+        }
     }
 
     _setupCanvas() {
-        const dpr = window.devicePixelRatio || 1
-        const rect = this._canvas.getBoundingClientRect()
+        const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1
+        const rect = this._canvas.getBoundingClientRect ? this._canvas.getBoundingClientRect() : { width: 600, height: 150 }
         const width = rect.width || 600
         const height = rect.height || 150
 
         this._canvas.width = width * dpr
         this._canvas.height = height * dpr
-        this._ctx.scale(dpr, dpr)
+        if (this._ctx.scale) {
+            this._ctx.scale(dpr, dpr)
+        }
         this._logicalWidth = width
         this._logicalHeight = height
     }

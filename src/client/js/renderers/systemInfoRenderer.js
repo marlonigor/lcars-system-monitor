@@ -4,10 +4,10 @@
  */
 
 export class SystemInfoRenderer {
-    constructor() {
-        this._hostnameEl = document.getElementById('sysinfo-hostname')
-        this._platformEl = document.getElementById('sysinfo-platform')
-        this._uptimeEl = document.getElementById('sysinfo-uptime')
+    constructor(elements = {}) {
+        this._hostnameEl = elements.hostnameEl || (typeof document !== 'undefined' ? document.getElementById('sysinfo-hostname') : null)
+        this._platformEl = elements.platformEl || (typeof document !== 'undefined' ? document.getElementById('sysinfo-platform') : null)
+        this._uptimeEl = elements.uptimeEl || (typeof document !== 'undefined' ? document.getElementById('sysinfo-uptime') : null)
         this._initialized = false
     }
 

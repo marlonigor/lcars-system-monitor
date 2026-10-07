@@ -3,9 +3,11 @@
  * Color changes: normal → warning (>80%) → critical (>90%)
  */
 
+import { escapeHtml } from '../utils/escapeHtml.js'
+
 export class DiskRenderer {
-    constructor() {
-        this._listEl = document.getElementById('disk-list')
+    constructor(elements = {}) {
+        this._listEl = elements.listEl || (typeof document !== 'undefined' ? document.getElementById('disk-list') : null)
     }
 
     render(metrics) {
@@ -34,7 +36,7 @@ export class DiskRenderer {
 
                 return `
           <div class="lcars-disk-card">
-            <span class="lcars-disk-mount">${this._escapeHtml(d.mount)}</span>
+            <span class="lcars-disk-mount">${escapeHtml(d.mount)}</span>
             <div class="lcars-disk-bar">
               <div class="lcars-disk-fill ${fillClass}" style="width: ${pct}%"></div>
             </div>
@@ -43,11 +45,5 @@ export class DiskRenderer {
         `
             })
             .join('')
-    }
-
-    _escapeHtml(str) {
-        const div = document.createElement('div')
-        div.textContent = str
-        return div.innerHTML
     }
 }
