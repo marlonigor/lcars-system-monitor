@@ -7,6 +7,9 @@ npm run lint
 echo "[test] Running complete test suite..."
 npm test
 
+echo "[test] Running Zabbix E2E automated test..."
+npm run test:zabbix
+
 echo "[test] Running API and SSE smoke tests..."
 npm run verify
 

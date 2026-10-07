@@ -59,6 +59,36 @@ export class ZabbixAdapter extends SystemMetricsAdapter {
     }
 
     /**
+     * Fallback process list for remote host.
+     * @returns {Promise<{ byCpu: Array<any>, byMemory: Array<any>, totalCount: number }>}
+     */
+    async getProcesses() {
+        return { byCpu: [], byMemory: [], totalCount: 0 }
+    }
+
+    /**
+     * Fallback network stats for remote host.
+     * @returns {Promise<{ rxSec: number, txSec: number, interfaces: Array<any> }>}
+     */
+    async getNetworkStats() {
+        return { rxSec: 0, txSec: 0, interfaces: [] }
+    }
+
+    /**
+     * Remote host system information.
+     * @returns {Promise<{ hostname: string, platform: string, arch: string, uptime: number, uptimeFormatted: string }>}
+     */
+    async getSystemInfo() {
+        return {
+            hostname: `ZABBIX-HOST-${this._hostId}`,
+            platform: 'remote',
+            arch: 'cluster',
+            uptime: 0,
+            uptimeFormatted: 'ONLINE',
+        }
+    }
+
+    /**
      * Collects active incidents from Zabbix problem.get.
      * @returns {Promise<Array<{ id: string, name: string, severity: number, severityLabel: string, timestamp: number }>>}
      */

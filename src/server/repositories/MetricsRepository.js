@@ -34,12 +34,12 @@ export class MetricsRepository {
      */
     async getSystemMetrics() {
         const collectors = {
-            cpu: () => this.nodeAdapter.getCpuUsage(),
-            memory: () => this.nodeAdapter.getMemoryUsage(),
-            disk: () => this.siAdapter.getDiskUsage(),
-            processes: () => this.siAdapter.getProcesses(),
-            network: () => this.siAdapter.getNetworkStats(),
-            systemInfo: () => this.nodeAdapter.getSystemInfo(),
+            cpu: () => this.nodeAdapter?.getCpuUsage?.(),
+            memory: () => this.nodeAdapter?.getMemoryUsage?.(),
+            disk: () => this.siAdapter?.getDiskUsage?.(),
+            processes: () => this.siAdapter?.getProcesses?.(),
+            network: () => this.siAdapter?.getNetworkStats?.(),
+            systemInfo: () => this.nodeAdapter?.getSystemInfo?.(),
             alerts: () =>
                 this.alertAdapter?.getActiveProblems
                     ? this.alertAdapter.getActiveProblems()
@@ -48,7 +48,12 @@ export class MetricsRepository {
 
         const keys = Object.keys(collectors)
         const results = await Promise.allSettled(
-            keys.map((key) => withTimeout(collectors[key](), 1000)),
+            keys.map((key) =>
+                withTimeout(
+                    Promise.resolve().then(() => collectors[key]()),
+                    1000,
+                ),
+            ),
         )
 
         const metrics = {}

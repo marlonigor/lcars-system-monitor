@@ -77,6 +77,8 @@ function scriptDescription(key) {
         lint: 'Run ESLint on source files',
         format: 'Format code with Prettier',
         test: 'Run unit tests',
+        'test:zabbix': 'Run automated end-to-end Zabbix integration test',
+        'test:all': 'Run complete validation pipeline (lint, tests, zabbix, smoke)',
         verify: 'Run smoke tests',
         readme: 'Regenerate README.md manually',
         setup: 'Install git hooks for auto-README',

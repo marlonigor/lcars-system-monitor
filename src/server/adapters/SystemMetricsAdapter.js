@@ -18,4 +18,12 @@ export class SystemMetricsAdapter {
     async getDiskUsage() {
         throw new Error('Not implemented: getDiskUsage')
     }
+
+    async getNetworkStats() {
+        return null
+    }
+
+    async getSystemInfo() {
+        return null
+    }
 }

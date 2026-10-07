@@ -216,4 +216,38 @@ describe('ZabbixAdapter', () => {
             assert.equal(disks, null)
         })
     })
+
+    describe('fallback methods', () => {
+        it('returns empty process structure', async () => {
+            const adapter = new ZabbixAdapter({
+                apiUrl: 'http://zabbix.local',
+                apiToken: 'fake-token',
+                hostId: '10084',
+            })
+            const proc = await adapter.getProcesses()
+            assert.deepEqual(proc, { byCpu: [], byMemory: [], totalCount: 0 })
+        })
+
+        it('returns empty network stats structure', async () => {
+            const adapter = new ZabbixAdapter({
+                apiUrl: 'http://zabbix.local',
+                apiToken: 'fake-token',
+                hostId: '10084',
+            })
+            const net = await adapter.getNetworkStats()
+            assert.deepEqual(net, { rxSec: 0, txSec: 0, interfaces: [] })
+        })
+
+        it('returns remote host system info', async () => {
+            const adapter = new ZabbixAdapter({
+                apiUrl: 'http://zabbix.local',
+                apiToken: 'fake-token',
+                hostId: '10084',
+            })
+            const info = await adapter.getSystemInfo()
+            assert.equal(info.hostname, 'ZABBIX-HOST-10084')
+            assert.equal(info.platform, 'remote')
+            assert.equal(info.uptimeFormatted, 'ONLINE')
+        })
+    })
 })
