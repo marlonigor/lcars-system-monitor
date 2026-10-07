@@ -12,7 +12,7 @@
         "lint": "eslint src/",
         "format": "prettier --write src/",
         "test": "node --test",
-        "test:zabbix": "node scripts/test-zabbix-e2e.js",
+        "test:zabbix": "node scripts/zabbix-e2e.js",
         "test:all": "npm run lint && npm test && npm run test:zabbix && npm run verify",
         "verify": "node scripts/smoke-test.js",
         "readme": "node scripts/generate-readme.js",

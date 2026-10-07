@@ -61,19 +61,31 @@ app.use(express.static(clientDir))
 
 // --- Periodic Collection + SSE Broadcast ---
 
-const COLLECT_INTERVAL = parseInt(process.env.COLLECT_INTERVAL || '2000', 10)
-const MIN_INTERVAL = 500
+const COLLECT_INTERVAL = parseInt(process.env.COLLECT_INTERVAL || '3000', 10)
+const MIN_INTERVAL = 1000
 
 const interval = Math.max(COLLECT_INTERVAL, MIN_INTERVAL)
 
-setInterval(async () => {
+let isCollecting = false
+
+async function collectAndBroadcast() {
+    if (isCollecting) {
+        log.warn('Previous metric collection still in progress, skipping cycle')
+        return
+    }
+
+    isCollecting = true
     try {
         const metrics = await service.getCurrentMetrics()
         sseManager.broadcast(metrics)
     } catch (err) {
         log.error({ err }, 'Failed during periodic metrics collection')
+    } finally {
+        isCollecting = false
     }
-}, interval)
+}
+
+setInterval(collectAndBroadcast, interval)
 
 // --- Start Server ---
 

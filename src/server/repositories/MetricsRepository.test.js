@@ -146,13 +146,18 @@ describe('MetricsRepository', () => {
     describe('adapter times out', () => {
         it('marks metric as degraded on timeout', async () => {
             const nodeAdapter = createMockAdapter({
-                getCpuUsage: () => new Promise((resolve) => setTimeout(() => resolve({ usage: 1 }), 5000)),
+                getCpuUsage: () => new Promise((resolve) => setTimeout(() => resolve({ usage: 1 }), 200)),
             })
-            const repo = new MetricsRepository(nodeAdapter, createMockAdapter())
+            const repo = new MetricsRepository(nodeAdapter, createMockAdapter(), null, 50)
             const result = await repo.getSystemMetrics()
 
             assert.equal(result.cpu.status, 'degraded')
             assert(result.cpu.error.includes('Timeout'))
+        })
+
+        it('uses custom timeoutMs passed in constructor', async () => {
+            const repo = new MetricsRepository(createMockAdapter(), createMockAdapter(), null, 1500)
+            assert.equal(repo.timeoutMs, 1500)
         })
     })
 
