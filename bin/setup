@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[setup] Installing Node.js dependencies..."
+npm install
+
+if [ ! -f .env ] && [ -f .env.example ]; then
+    echo "[setup] Creating .env from .env.example..."
+    cp .env.example .env
+fi
+
+echo "[setup] Installing git hooks..."
+node scripts/setup-hooks.js
+
+echo "[setup] Building production client assets..."
+npm run build
+
+echo "[setup] Environment setup completed successfully."
