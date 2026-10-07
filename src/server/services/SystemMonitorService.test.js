@@ -213,4 +213,62 @@ describe('SystemMonitorService', () => {
             assert.equal(result.status, 'degraded')
         })
     })
+
+    describe('alert level and incident escalation', () => {
+        it('escalates to critical and red alert when severity >= 4 problem is active', async () => {
+            const repo = createMockRepo({
+                getSystemMetrics: async () => ({
+                    cpu: { status: 'ok', data: { usage: 20 } },
+                    memory: { status: 'ok', data: { used: 1, total: 2, free: 1, percentage: 50 } },
+                    disk: { status: 'ok', data: [] },
+                    processes: { status: 'ok', data: { byCpu: [], byMemory: [], totalCount: 1 } },
+                    network: { status: 'ok', data: { rxSec: 0, txSec: 0 } },
+                    systemInfo: { status: 'ok', data: {} },
+                    alerts: {
+                        status: 'ok',
+                        data: [{ id: '1', name: 'Warp core containment failure', severity: 5, severityLabel: 'Disaster', timestamp: Date.now() }],
+                    },
+                }),
+            })
+
+            const svc = new SystemMonitorService(repo)
+            const result = await svc.getCurrentMetrics()
+
+            assert.equal(result.alertLevel, 'red')
+            assert.equal(result.status, 'critical')
+            assert.equal(result.alerts.length, 1)
+        })
+
+        it('escalates to yellow alert and degraded when severity === 3 problem is active', async () => {
+            const repo = createMockRepo({
+                getSystemMetrics: async () => ({
+                    cpu: { status: 'ok', data: { usage: 20 } },
+                    memory: { status: 'ok', data: { used: 1, total: 2, free: 1, percentage: 50 } },
+                    disk: { status: 'ok', data: [] },
+                    processes: { status: 'ok', data: { byCpu: [], byMemory: [], totalCount: 1 } },
+                    network: { status: 'ok', data: { rxSec: 0, txSec: 0 } },
+                    systemInfo: { status: 'ok', data: {} },
+                    alerts: {
+                        status: 'ok',
+                        data: [{ id: '2', name: 'Subspace interference detected', severity: 3, severityLabel: 'Average', timestamp: Date.now() }],
+                    },
+                }),
+            })
+
+            const svc = new SystemMonitorService(repo)
+            const result = await svc.getCurrentMetrics()
+
+            assert.equal(result.alertLevel, 'yellow')
+            assert.equal(result.status, 'degraded')
+        })
+
+        it('returns nominal when alerts array is empty', async () => {
+            const repo = createMockRepo()
+            const svc = new SystemMonitorService(repo)
+            const result = await svc.getCurrentMetrics()
+
+            assert.equal(result.alertLevel, 'nominal')
+            assert.deepEqual(result.alerts, [])
+        })
+    })
 })

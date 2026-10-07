@@ -11,11 +11,21 @@ export class MetricsRepository {
     /**
      * @param {import('../adapters/NodeNativeAdapter.js').NodeNativeAdapter} nodeAdapter
      * @param {import('../adapters/SystemInformationAdapter.js').SystemInformationAdapter} siAdapter
+     * @param {import('../adapters/ZabbixAdapter.js').ZabbixAdapter} [alertAdapter]
      */
-    constructor(nodeAdapter, siAdapter) {
+    constructor(nodeAdapter, siAdapter, alertAdapter = null) {
         this.nodeAdapter = nodeAdapter
         this.siAdapter = siAdapter
-        this._lastKnown = { cpu: null, memory: null, disk: null, processes: null, network: null, systemInfo: null }
+        this.alertAdapter = alertAdapter
+        this._lastKnown = {
+            cpu: null,
+            memory: null,
+            disk: null,
+            processes: null,
+            network: null,
+            systemInfo: null,
+            alerts: [],
+        }
     }
 
     /**
@@ -30,6 +40,10 @@ export class MetricsRepository {
             processes: () => this.siAdapter.getProcesses(),
             network: () => this.siAdapter.getNetworkStats(),
             systemInfo: () => this.nodeAdapter.getSystemInfo(),
+            alerts: () =>
+                this.alertAdapter?.getActiveProblems
+                    ? this.alertAdapter.getActiveProblems()
+                    : Promise.resolve([]),
         }
 
         const keys = Object.keys(collectors)

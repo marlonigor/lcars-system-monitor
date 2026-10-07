@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import { NodeNativeAdapter } from './adapters/NodeNativeAdapter.js'
 import { SystemInformationAdapter } from './adapters/SystemInformationAdapter.js'
+import { ZabbixAdapter } from './adapters/ZabbixAdapter.js'
 import { MetricsRepository } from './repositories/MetricsRepository.js'
 import { SystemMonitorService } from './services/SystemMonitorService.js'
 import { SSEManager } from './http/sseManager.js'
@@ -12,9 +13,19 @@ const log = logger.child({ layer: 'http' })
 
 // --- Composition Root ---
 
+let alertAdapter = null
+if (process.env.ZABBIX_URL && process.env.ZABBIX_TOKEN && process.env.ZABBIX_HOST_ID) {
+    alertAdapter = new ZabbixAdapter({
+        apiUrl: process.env.ZABBIX_URL,
+        apiToken: process.env.ZABBIX_TOKEN,
+        hostId: process.env.ZABBIX_HOST_ID,
+    })
+    log.info({ hostId: process.env.ZABBIX_HOST_ID }, 'Zabbix alert adapter initialized')
+}
+
 const nodeAdapter = new NodeNativeAdapter()
 const siAdapter = new SystemInformationAdapter()
-const repository = new MetricsRepository(nodeAdapter, siAdapter)
+const repository = new MetricsRepository(nodeAdapter, siAdapter, alertAdapter)
 const service = new SystemMonitorService(repository)
 const sseManager = new SSEManager()
 

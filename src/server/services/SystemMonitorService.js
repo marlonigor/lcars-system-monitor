@@ -44,15 +44,21 @@ export class SystemMonitorService {
 
         // Compute global status (network included, systemInfo excluded — it's informational)
         const statuses = ['cpu', 'memory', 'disk', 'processes', 'network'].map((k) => metrics[k].status)
-        const globalStatus = this._computeGlobalStatus(statuses)
+        const sensorStatus = this._computeGlobalStatus(statuses)
+
+        const alerts = metrics.alerts?.status === 'ok' && Array.isArray(metrics.alerts.data) ? metrics.alerts.data : []
+        const alertLevel = this._computeAlertLevel(alerts)
+        const globalStatus = this._resolveGlobalStatus(sensorStatus, alertLevel)
 
         if (globalStatus !== 'ok') {
-            log.warn({ globalStatus, statuses }, 'System status is not fully operational')
+            log.warn({ globalStatus, alertLevel, statuses }, 'System status is not fully operational')
         }
 
         return {
             timestamp,
             status: globalStatus,
+            alertLevel,
+            alerts,
             cpu: metrics.cpu,
             memory: metrics.memory,
             disk: metrics.disk,
@@ -88,5 +94,30 @@ export class SystemMonitorService {
         if (allUnavailable) return 'critical'
 
         return 'degraded'
+    }
+
+    /**
+     * Computes LCARS alert level from active incident severities.
+     * @param {Array<{ severity: number }>} alerts
+     * @returns {'nominal'|'yellow'|'red'}
+     */
+    _computeAlertLevel(alerts) {
+        if (!alerts || alerts.length === 0) return 'nominal'
+        const maxSeverity = Math.max(...alerts.map((a) => a.severity || 0))
+        if (maxSeverity >= 4) return 'red'
+        if (maxSeverity === 3) return 'yellow'
+        return 'nominal'
+    }
+
+    /**
+     * Resolves final global status taking alert levels into account.
+     * @param {'ok'|'degraded'|'critical'} sensorStatus
+     * @param {'nominal'|'yellow'|'red'} alertLevel
+     * @returns {'ok'|'degraded'|'critical'}
+     */
+    _resolveGlobalStatus(sensorStatus, alertLevel) {
+        if (alertLevel === 'red') return 'critical'
+        if (alertLevel === 'yellow' && sensorStatus === 'ok') return 'degraded'
+        return sensorStatus
     }
 }
