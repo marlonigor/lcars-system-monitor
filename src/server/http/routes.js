@@ -16,7 +16,7 @@ export function createRoutes(service, sseManager) {
         try {
             const metrics = await service.getCurrentMetrics()
             res.json(metrics)
-        } catch (err) {
+        } catch {
             res.json({
                 timestamp: Date.now(),
                 status: 'critical',

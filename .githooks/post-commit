@@ -5,7 +5,7 @@ if [ "$SKIP_README_HOOK" = "1" ]; then
     exit 0
 fi
 
-echo "📝 Updating README.md..."
+echo "Updating README.md..."
 
 # Generate the README
 node scripts/generate-readme.js

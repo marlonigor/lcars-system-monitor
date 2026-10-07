@@ -21,7 +21,7 @@ function log(msg) {
 }
 
 function fail(msg) {
-    console.error(`[smoke-test] ❌ FAIL: ${msg}`)
+    console.error(`[smoke-test] [FAIL] ${msg}`)
     cleanup()
     process.exit(1)
 }
@@ -104,11 +104,11 @@ async function testMetricsEndpoint() {
     // History
     assert(Array.isArray(data.history), 'history must be array')
 
-    log(`  ✅ Schema valid (status: ${data.status})`)
-    log(`  ✅ CPU: ${data.cpu.data?.usage ?? 'N/A'}%`)
-    log(`  ✅ Memory: ${data.memory.data ? Math.round(data.memory.data.used / 1e9) + 'GB' : 'N/A'}`)
-    log(`  ✅ Disks: ${data.disk.data?.length ?? 'N/A'} volumes`)
-    log(`  ✅ Processes: ${data.processes.data?.totalCount ?? 'N/A'} total`)
+    log(`  [PASS] Schema valid (status: ${data.status})`)
+    log(`  [PASS] CPU: ${data.cpu.data?.usage ?? 'N/A'}%`)
+    log(`  [PASS] Memory: ${data.memory.data ? Math.round(data.memory.data.used / 1e9) + 'GB' : 'N/A'}`)
+    log(`  [PASS] Disks: ${data.disk.data?.length ?? 'N/A'} volumes`)
+    log(`  [PASS] Processes: ${data.processes.data?.totalCount ?? 'N/A'} total`)
 }
 
 async function testSSEStream() {
@@ -149,7 +149,7 @@ async function testSSEStream() {
 
                         clearTimeout(timeout)
                         controller.abort()
-                        log('  ✅ SSE event received and parsed')
+                        log('  [PASS] SSE event received and parsed')
                         resolve()
                         return
                     }
@@ -177,7 +177,7 @@ async function main() {
         await testSSEStream()
 
         log('')
-        log('🎉 All smoke tests passed!')
+        log('All smoke tests passed!')
         cleanup()
         process.exit(0)
     } catch (err) {

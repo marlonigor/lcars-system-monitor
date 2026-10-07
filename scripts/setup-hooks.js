@@ -21,5 +21,5 @@ try {
     // chmod may fail on Windows, but git for Windows handles it
 }
 
-console.log('✅ Git hook installed: .git/hooks/post-commit');
+console.log('[OK] Git hook installed: .git/hooks/post-commit');
 console.log('   README.md will be auto-updated on each commit.');
