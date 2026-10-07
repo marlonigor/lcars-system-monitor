@@ -10,18 +10,18 @@ services:
       - "8080:8080"
 
   lcars-monitor:
-    image: node:22-alpine
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: lcars-monitor
-    working_dir: /app
-    volumes:
-      - .:/app
     environment:
       - PORT=3001
+      - METRICS_SOURCE=zabbix
       - ZABBIX_URL=http://mock-zabbix:8080
       - ZABBIX_TOKEN=docker-test-token
       - ZABBIX_HOST_ID=10084
       - COLLECT_INTERVAL=2000
-    command: ["npm", "start"]
+      - LOG_LEVEL=info
     ports:
       - "3001:3001"
     depends_on:

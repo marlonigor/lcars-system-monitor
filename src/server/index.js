@@ -1,3 +1,6 @@
+import { fileURLToPath } from 'node:url'
+import { join } from 'node:path'
+import { existsSync } from 'node:fs'
 import express from 'express'
 import cors from 'cors'
 import { NodeNativeAdapter } from './adapters/NodeNativeAdapter.js'
@@ -8,6 +11,14 @@ import { SystemMonitorService } from './services/SystemMonitorService.js'
 import { SSEManager } from './http/sseManager.js'
 import { createRoutes } from './http/routes.js'
 import logger from './logger.js'
+
+if (typeof process.loadEnvFile === 'function') {
+    try {
+        process.loadEnvFile()
+    } catch {
+        // Fallback to existing environment variables if .env is missing
+    }
+}
 
 const log = logger.child({ layer: 'http' })
 
@@ -42,6 +53,11 @@ app.use(express.json())
 
 const routes = createRoutes(service, sseManager)
 app.use('/api', routes)
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
+const distDir = join(__dirname, '../../dist')
+const clientDir = existsSync(distDir) ? distDir : join(__dirname, '../client')
+app.use(express.static(clientDir))
 
 // --- Periodic Collection + SSE Broadcast ---
 

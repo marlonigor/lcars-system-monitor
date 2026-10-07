@@ -73,6 +73,7 @@ function scriptDescription(key) {
         dev: 'Start development server (client + backend)',
         'dev:server': 'Start backend with auto-reload',
         'dev:client': 'Start Vite dev server for the client',
+        build: 'Build production client bundle with Vite',
         start: 'Run production server',
         lint: 'Run ESLint on source files',
         format: 'Format code with Prettier',
