@@ -754,3 +754,54 @@ body {
 .lcars-reconnect-banner.visible {
   display: block;
 }
+
+/* --- Alert Condition Modes (Red Alert & Yellow Alert) --- */
+.lcars-app.alert-red {
+  --lcars-sky: var(--lcars-mars);
+  --lcars-blue: var(--lcars-mars);
+  --lcars-teal: var(--lcars-mars);
+}
+
+.lcars-app.alert-red .lcars-bracket-text {
+  animation: lcars-red-pulse 1.2s infinite ease-in-out;
+}
+
+.lcars-app.alert-yellow {
+  --lcars-sky: var(--lcars-orange);
+  --lcars-blue: var(--lcars-gold);
+}
+
+@keyframes lcars-red-pulse {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px rgba(204, 51, 51, 0.8);
+  }
+  50% {
+    opacity: 0.35;
+    text-shadow: none;
+  }
+}
+
+.lcars-incident-banner {
+  display: none;
+  background: var(--lcars-mars);
+  color: var(--lcars-bg);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 4px;
+  margin-bottom: var(--lcars-gap);
+  border-left: 6px solid #ff3333;
+}
+
+.lcars-incident-banner.visible {
+  display: block;
+}
+
+.lcars-incident-banner.alert-yellow {
+  background: var(--lcars-gold);
+  border-left-color: var(--lcars-orange);
+}
